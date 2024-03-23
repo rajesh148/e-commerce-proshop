@@ -1,11 +1,5 @@
-import "./App.css";
-
 function App() {
-  return (
-    <div className="App">
-      <h1>APP</h1>
-    </div>
-  );
+  return <h1>Welcome to ProShop</h1>;
 }
 
 export default App;
