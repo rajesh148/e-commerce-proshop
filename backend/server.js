@@ -1,8 +1,11 @@
-import express from "express";
-import products from "./data/products.js";
+import express, { urlencoded } from "express";
 import dotenv from "dotenv";
+import productRoutes from "./routes/productRouter.js";
+import userRoutes from "./routes/userRouter.js";
+import cookieParser from "cookie-parser";
 import "colors";
 import connectDB from "./config/db.js";
+import { errorHandler, notFound } from "./middlewares/errorMiddlewar.js";
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
@@ -10,19 +13,21 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("First route");
-});
+//Body parser Middlewares
+app.use(express.json());
+app.use(urlencoded({ extended: true }));
 
-app.get("/api/products", (req, res) => {
-  res.json(products);
-});
+//cookie parser middleware
+app.use(cookieParser());
 
-//FOR SINGLE PRODUCT
-app.get("/api/products/:id", (req, res) => {
-  const product = products.find((p) => p._id === req.params.id);
-  res.send(product);
-});
+//products
+app.use("/api/products", productRoutes);
+
+//users
+app.use("/api/users", userRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 //START THE SERVER ON THE PORT
 app.listen(PORT, () =>
